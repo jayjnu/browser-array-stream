@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Demo</h1>
+    <ul id="list"></ul>
+    <div id="log"></div>
+    <script src="https://unpkg.com/@reactivex/rxjs@5.0.0-beta.1/dist/global/Rx.umd.js"></script>
+    <script src="../ArrayStream.js"></script>
+    <script>
+        (function() {
+            var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                list = document.getElementById('list'),
+                log = document.getElementById('log'),
+                stream = new ArrayStream(arr, { interval: 50 });
+                arrStreamObservable = Rx.Observable.create(function (observer) {
+                    stream.subscribe({
+                        onData: function(data) {
+                            observer.next(data);
+                        },
+                        onComplete: function() {
+                            observer.complete();
+                        },
+                        onError: function(err) {
+                            observer.error(err);
+                        }
+                    })
+                    return stream.abort.bind(stream);
+                }).
+                map(function(el) {
+                    return {
+                        listItem: render('li', ['list-item'], [document.createTextNode('contents: ' + el)]),
+                        logItem: renderStatus('data', stream.status)
+                    };
+                }),
+                unSubArrStream = arrStreamObservable.subscribe({
+                    next: function(domNodes) {
+                        list.appendChild(domNodes.listItem);
+                        log.appendChild(domNodes.logItem);
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        unSubArrStream();
+                    },
+                    complete: function() {
+                        log.appendChild(renderStatus('complete', stream.status));
+                    }
+                });
+
+            
+            function renderStatus(title, desc) {
+                return render(
+                        'dl', 
+                        ['log-status'], 
+                        [
+                            render('dt', ['log-title'], [document.createTextNode(title)]),
+                            render('dd', ['log-desc'], [document.createTextNode(desc)])
+                        ]
+                    );
+            }
+
+            function render(tagName, classList, children) {
+                tagName = tagName || 'div';
+                classList = classList || [];
+                children = children || [];
+
+                var dom = document.createElement(tagName),
+                    frag = document.createDocumentFragment();
+
+                dom.className = classList.join(' ');
+                children.forEach(function(node){
+                    frag.appendChild(node);
+                });
+
+                dom.appendChild(frag);
+                return dom;
+            }
+        })();
+    </script>
+</body>
+</html>

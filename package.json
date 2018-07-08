@@ -1,0 +1,11 @@
+{
+  "name": "browser-array-stream",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/jayjnu/browser-array-stream.git",
+  "author": "zac.jung <zac.jung@kakaocorp.com>",
+  "license": "MIT",
+  "scripts": {
+
+  }
+}
