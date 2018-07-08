@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/jayjnu/browser-array-stream.git",
-  "author": "zac.jung <zac.jung@kakaocorp.com>",
+  "author": "jayjnu <doublejnu@gmail.com>",
   "license": "MIT",
   "scripts": {
 
